@@ -1,0 +1,11 @@
+.Board{
+    position: absolute;
+    left: 50px;
+    right: 50px;
+    top: 50px;
+    bottom: 50px;
+}
+.Board__outer{
+    position: relative;
+    padding-top: 100%;
+}

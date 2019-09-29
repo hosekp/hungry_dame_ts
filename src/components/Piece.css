@@ -1,0 +1,40 @@
+.Piece {
+  background-color: white;
+  border-radius: 10000000px;
+  margin: 20%;
+  height: 60%;
+  width: 60%;
+  position: relative;
+  box-sizing: border-box;
+  box-shadow: rgba(0, 0, 0, 0.5) 2px 2px 5px;
+  border: 4px solid white;
+}
+.Piece.black {
+  background-color: black;
+  border-color: black;
+}
+.Piece.dame {
+  margin: 10%;
+  height: 80%;
+  width: 80%;
+}
+.Piece--minor {
+  border: 4px solid gray;
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  height: 60%;
+  width: 60%;
+  box-sizing: border-box;
+  border-radius: 1000000px;
+}
+
+.Piece.playable {
+    border-color: rgb(255,127,127);
+}
+.Piece.playable.black {
+    border-color: rgb(127,0,0);
+}
+.Piece.selected {
+  border-color: red;
+}

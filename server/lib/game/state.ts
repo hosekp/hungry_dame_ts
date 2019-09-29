@@ -1,0 +1,46 @@
+import {Alignment, getDirection} from "./alignment";
+import { Pieces } from "./pieces/pieces";
+
+export class State {
+  readonly alignment: Alignment;
+  readonly forcedPiece: number | null;
+  readonly isBlackPlaying: boolean;
+
+  constructor(
+    alignment: Alignment,
+    forcedPiece: number | null,
+    isBlackPlaying: boolean
+  ) {
+    this.alignment = alignment;
+    this.forcedPiece = forcedPiece;
+    this.isBlackPlaying = isBlackPlaying;
+  }
+
+  findPiecesOnTurn(): Array<number> {
+    if (this.forcedPiece !== null) return [this.forcedPiece];
+    const result: Array<number> = [];
+    const align = this.alignment;
+    const isBlack = this.isBlackPlaying;
+    for (let i = 0; i < 32; i++) {
+      if (Pieces.isMine(align[i], isBlack)) {
+        result.push(i);
+      }
+    }
+    return result;
+  }
+  move(piecePos: number, target: number): State {
+    const piece = Pieces.getPiece(this.alignment[piecePos]);
+    const direction = getDirection(piecePos,target);
+    const newAlign=this.alignment.slice();
+    let mover=piecePos;
+    while(mover!==target){
+      newAlign[mover]="-";
+      mover=direction[mover];
+    }
+    newAlign[target]=piece.sign;
+    if(piece.canJump(target,newAlign)){
+      return new State(newAlign,target,this.isBlackPlaying);
+    }
+    return new State(newAlign,null,!this.isBlackPlaying);
+  }
+}

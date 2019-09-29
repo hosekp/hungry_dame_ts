@@ -3,24 +3,32 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "express": "^4.17.1",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "typescript": "3.6.3"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.1",
     "@types/jest": "24.0.18",
     "@types/node": "12.7.8",
     "@types/react": "16.9.3",
     "@types/react-dom": "16.9.1",
-    "react": "^16.9.0",
-    "react-dom": "^16.9.0",
     "react-scripts": "3.1.2",
-    "typescript": "3.6.3"
+    "prettier": "^1.18.2",
+    "ts-node-dev": "^1.0.0-pre.43"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "server": "cd server && ts-node-dev --respawn --transpileOnly ./server.ts"
   },
   "eslintConfig": {
     "extends": "react-app"
   },
+  "proxy": "http://localhost:5000/",
   "browserslist": {
     "production": [
       ">0.2%",

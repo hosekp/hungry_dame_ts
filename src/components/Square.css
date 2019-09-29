@@ -1,0 +1,14 @@
+.Square {
+  width: 12.5%;
+  height: 12.5%;
+  float: left;
+}
+.Square.black {
+  background-color: saddlebrown;
+}
+.Square.dummy {
+  background-color: cornsilk;
+}
+.Square.allowed {
+  background-color: red;
+}

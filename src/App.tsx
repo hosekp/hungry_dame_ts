@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useCallback, useEffect, useState} from "react";
+import "./App.css";
+import { GameStatus } from "../server/interfaces/game-status";
+import {movePiece, resetGame} from "./lib/gateway";
+import Board from "./components/Board";
 
 const App: React.FC = () => {
+  const [status, setStatus] = useState<GameStatus | null>(null);
+  useEffect(() => {
+    resetGame().then(setStatus);
+  }, []);
+  const moveHandler=useCallback((start:number,target:number)=>{
+    movePiece(start,target).then(status=>status && setStatus(status));
+  },[]);
+  if (status === null) return null;
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Board
+        onMove={moveHandler}
+        alignment={status.alignment}
+        playablePieces={status.playablePieces}
+      />
     </div>
   );
-}
+};
 
 export default App;
