@@ -1,8 +1,8 @@
 import React, { FC, useState, Fragment, useEffect } from "react";
 import "./Board.css";
 import Square, { DummySquare } from "./Square";
-import { getMoves } from "../lib/gateway";
-import { PossibleMove } from "../../server/interfaces/possible-move";
+import { getMoves } from "../../lib/gateway";
+import { PossibleMove } from "../../../server/interfaces/possible-move";
 
 type BoardProps = {
   alignment: Array<string>;

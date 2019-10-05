@@ -28,6 +28,7 @@ export class State {
     }
     return result;
   }
+
   findDamesOnTurn(): Array<number> {
     const result: Array<number> = [];
     const align = this.alignment;
@@ -39,6 +40,7 @@ export class State {
     }
     return result;
   }
+
   move(piecePos: number, target: number): State {
     let piece = Pieces.getPiece(this.alignment[piecePos]);
     const direction = getDirection(piecePos, target);
@@ -65,7 +67,20 @@ export class State {
     }
     return new State(newAlign, null, !this.isBlackPlaying);
   }
-  // checkEnd():string{
-  //
-  // }
+
+  isPat() {
+    const align = this.alignment;
+    let black = false;
+    let white = false;
+    for (let i = 0; i < 32; i++) {
+      if (align[i] === "-") continue;
+      if (!black && (align[i] === "b" || align[i] === "B")) {
+        if (white) return true;
+      }
+      if (!white && (align[i] === "w" || align[i] === "W")) {
+        if (black) return true;
+      }
+    }
+    return false;
+  }
 }

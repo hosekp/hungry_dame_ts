@@ -7,7 +7,7 @@ const initialAlignment: Alignment = createAlignment(
   // "bBbBbbbBbbbb--------wwWwWwwwWwww"
   // "bbbbbbbbbbbb--------wwwwwwwwwwww"
   // "b-------------------wwwwwwwwwwww"
-  "----------w------b---Ww---------"
+  "----------w------b---W----------"
 );
 const initialState: State = new State(initialAlignment, null, false);
 
@@ -22,7 +22,7 @@ export class Game {
     if (this.state.forcedPiece !== null) return [this.state.forcedPiece];
     const align = this.state.alignment;
     const dames = this.state.findDamesOnTurn();
-    if(dames.length>0){
+    if (dames.length > 0) {
       const dameProto = this.state.isBlackPlaying ? blackDame : whiteDame;
       if (dames.some(pos => dameProto.canJump(pos, align))) {
         return dames.filter(pos => dameProto.canJump(pos, align));
@@ -42,6 +42,7 @@ export class Game {
       );
     }
   }
+
   getPossibleMoves(pos: number): Array<number> {
     const align = this.state.alignment;
     const sign = align[pos];
@@ -55,14 +56,25 @@ export class Game {
       return piece.getPossibleMoves(pos, align);
     }
   }
+
   getStatus(): GameStatus {
+    let playablePieces = this.findPlayablePieces();
+    let gameEnded = null;
+    if (playablePieces.length === 0) {
+      if (this.state.isPat()) {
+        gameEnded = "pat";
+      } else {
+        gameEnded = this.state.isBlackPlaying ? "white" : "black";
+      }
+    }
     return {
       alignment: this.state.alignment,
       isBlackPlaying: this.state.isBlackPlaying,
-      playablePieces: this.findPlayablePieces(),
-      gameEnded: null
+      playablePieces,
+      gameEnded
     };
   }
+
   move(piecePos: number, target: number): string {
     const align = this.state.alignment;
     const piece = Pieces.getPiece(align[piecePos]);

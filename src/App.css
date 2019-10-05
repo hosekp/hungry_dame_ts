@@ -1,4 +1,12 @@
 .App {
   text-align: left;
+  padding: 2%;
+}
+.App__left{
+  /*width: 65%;*/
   width: 600px;
+}
+.App__right{
+  float: right;
+  width: 30%;
 }
