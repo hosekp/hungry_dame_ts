@@ -38,3 +38,6 @@
 .Piece.selected {
   border-color: red;
 }
+.Piece.selected.black {
+  border-color: red;
+}

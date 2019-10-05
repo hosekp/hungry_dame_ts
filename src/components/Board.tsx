@@ -19,6 +19,11 @@ const Board: FC<BoardProps> = ({
   const [possibleMoves, setPossibleMoves] = useState<PossibleMove | null>(null);
 
   useEffect(() => {
+    if (playablePieces.length === 1) {
+      setSelected(playablePieces[0]);
+    }
+  }, [playablePieces]);
+  useEffect(() => {
     if (selected === null) return;
     getMoves(selected).then(setPossibleMoves);
   }, [selected]);
@@ -27,7 +32,7 @@ const Board: FC<BoardProps> = ({
     const allowed = possibleMoves ? possibleMoves.moves.includes(index) : false;
     const playable = playablePieces.includes(index);
     let onClick;
-    if (allowed && selected) {
+    if (allowed && selected !== null) {
       onClick = (target: number) => {
         setSelected(null);
         setPossibleMoves(null);

@@ -1,45 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="acb8fff5-7abb-4fea-9a96-4016526b150a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/errors/argument-error.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/errors/errorMiddleware.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/errors/server-error.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/interfaces/game-status.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/interfaces/possible-move.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/lib/game/alignment.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/lib/game/game.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/lib/game/pieces/constants.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/lib/game/pieces/dame.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/lib/game/pieces/pawn.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/lib/game/pieces/piece.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/lib/game/pieces/pieces.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/lib/game/state.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/routes/get-moves.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/routes/get-prediction.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/routes/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/routes/post-restart.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/routes/put-move.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/server.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/tsconfig.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Board.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Board.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Piece.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Piece.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Square.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Square.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/gateway.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/hungry-dame.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hungry-dame.iml" afterDir="false" />
+    <list default="true" id="acb8fff5-7abb-4fea-9a96-4016526b150a" name="Default Changelist" comment="basic playable without prediction">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/interfaces/game-status.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/interfaces/game-status.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/lib/game/game.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/lib/game/game.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/lib/game/pieces/dame.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/lib/game/pieces/dame.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/lib/game/pieces/pieces.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/lib/game/pieces/pieces.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/lib/game/state.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/lib/game/state.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/logo.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Board.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Board.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Piece.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Piece.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Square.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Square.tsx" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
