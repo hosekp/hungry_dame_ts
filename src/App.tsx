@@ -4,7 +4,7 @@ import { GameStatus } from "../server/interfaces/game-status";
 import { movePiece, resetGame } from "./lib/gateway";
 import Board from "./components/board/Board";
 import Victory from "./components/Victory";
-import Sidebar from "./components/Sidebar";
+import Sidebar from "./components/sidebar/Sidebar";
 
 const App: React.FC = () => {
   const [status, setStatus] = useState<GameStatus | null>(null);

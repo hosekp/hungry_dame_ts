@@ -5,6 +5,7 @@ import { Pieces } from "./pieces";
 
 export class Dame implements Piece {
   readonly isBlack: boolean;
+  readonly isDame  = true;
   readonly sign: PieceSign;
   constructor(isBlack: boolean) {
     this.isBlack = isBlack;

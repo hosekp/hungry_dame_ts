@@ -15,14 +15,32 @@ export class State {
     this.forcedPiece = forcedPiece;
     this.isBlackPlaying = isBlackPlaying;
   }
+  createState(
+    alignment: Alignment,
+    forcedPiece: number | null,
+    isBlackPlaying: boolean
+  ) {
+    return new State(alignment, forcedPiece, isBlackPlaying);
+  }
 
   findPiecesOnTurn(): Array<number> {
-    if (this.forcedPiece !== null) return [this.forcedPiece];
     const result: Array<number> = [];
     const align = this.alignment;
     const isBlack = this.isBlackPlaying;
     for (let i = 0; i < 32; i++) {
       if (Pieces.isMine(align[i], isBlack)) {
+        result.push(i);
+      }
+    }
+    return result;
+  }
+
+  findPawnsOnTurn(): Array<number> {
+    const result: Array<number> = [];
+    const align = this.alignment;
+    const pawnSign = this.isBlackPlaying ? "b" : "w";
+    for (let i = 0; i < 32; i++) {
+      if (align[i] === pawnSign) {
         result.push(i);
       }
     }
@@ -60,12 +78,12 @@ export class State {
       if (Pieces.shouldPromote(piece, target)) {
         newAlign[target] = Pieces.promote(piece).sign;
       }
-      return new State(newAlign, target, this.isBlackPlaying);
+      return this.createState(newAlign, target, this.isBlackPlaying);
     }
     if (Pieces.shouldPromote(piece, target)) {
       newAlign[target] = Pieces.promote(piece).sign;
     }
-    return new State(newAlign, null, !this.isBlackPlaying);
+    return this.createState(newAlign, null, !this.isBlackPlaying);
   }
 
   isPat() {

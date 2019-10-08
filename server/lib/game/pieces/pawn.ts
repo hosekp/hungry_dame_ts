@@ -5,6 +5,7 @@ import {Piece} from "./piece";
 
 export class Pawn implements Piece{
   readonly isBlack: boolean;
+  readonly isDame  = false;
   readonly sign: PieceSign;
   constructor(isBlack: boolean) {
     this.isBlack = isBlack;

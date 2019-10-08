@@ -1,5 +1,6 @@
 import { GameStatus } from "../../server/interfaces/game-status";
 import { PossibleMove } from "../../server/interfaces/possible-move";
+import {PredictionType} from "../../server/lib/predictor/PredictionType";
 
 const errorResponse = (response: Response): boolean => {
   if (response.status !== 200) {
@@ -34,5 +35,13 @@ export const movePiece = async (
     method: "PUT"
   });
   if (errorResponse(response)) return null;
+  return await readJson(response);
+};
+
+export const getPredictions = async ():Promise<PredictionType[]>=>{
+  const response = await fetch(`/api/predictions`, {
+    method: "GET"
+  });
+  if (errorResponse(response)) return [];
   return await readJson(response);
 };
