@@ -76,9 +76,11 @@ export class Predictor {
     }
     this.currentSteps++;
     if (Predictor.priorityQueue.length > Predictor.priorityPointer) {
+      console.log("Computing "+Predictor.priorityQueue[Predictor.priorityPointer].alignment.join(""));
       Predictor.priorityQueue[Predictor.priorityPointer].compute();
       Predictor.priorityPointer++;
     } else if (Predictor.queue.length > Predictor.queuePointer) {
+      console.log("Computing "+Predictor.queue[Predictor.queuePointer].alignment.join(""));
       Predictor.queue[Predictor.queuePointer].compute();
       Predictor.queuePointer++;
     } else {

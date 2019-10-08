@@ -9,7 +9,7 @@ import {
 } from "../game/pieces/pieces";
 import { Piece } from "../game/pieces/piece";
 import { Alignment } from "../game/alignment";
-import {Predictor} from "./Predictor";
+import { Predictor } from "./Predictor";
 
 export const blackPicker = (best: PredictorScore, now: PredictorScore) => {
   if (best.score === now.score) {
@@ -23,13 +23,19 @@ export const whitePicker = (best: PredictorScore, now: PredictorScore) => {
   }
   return best.score > now.score ? best : now;
 };
-export const blackComparator = (first: PredictorScore, second: PredictorScore) => {
+export const blackComparator = (
+  first: PredictorScore,
+  second: PredictorScore
+) => {
   if (first.score === second.score) {
     return first.length - second.length;
   }
   return first.score - second.score;
 };
-export const whiteComparator = (first: PredictorScore, second: PredictorScore) => {
+export const whiteComparator = (
+  first: PredictorScore,
+  second: PredictorScore
+) => {
   if (first.score === second.score) {
     return first.length - second.length;
   }
@@ -48,7 +54,7 @@ class PredictorState extends State {
   }
 
   assignValidMoves(): void {
-    const result: Array<PredictorState> = [];
+    let result: Array<PredictorState> = [];
     const align = this.alignment;
     if (this.forcedPiece !== null) {
       const pos = this.forcedPiece;
@@ -62,7 +68,7 @@ class PredictorState extends State {
       if (dames.some(pos => dameProto.canJump(pos, align))) {
         dames.forEach(pos => {
           if (dameProto.canJump(pos, align)) {
-            result.concat(
+            result = result.concat(
               this.enhance(dameProto.getPossibleJumps(pos, align), pos)
             );
           }
@@ -77,19 +83,19 @@ class PredictorState extends State {
     const canJump = pawns.some(pos => pawnProto.canJump(pos, align));
     if (canJump) {
       pawns.forEach(pos => {
-        result.concat(
+        result = result.concat(
           this.enhance(pawnProto.getPossibleJumps(pos, align), pos)
         );
       });
       return this.assignResult(result, true);
     } else {
       dames.forEach(pos => {
-        result.concat(
+        result = result.concat(
           this.enhance(dameProto.getPossibleJumps(pos, align), pos)
         );
       });
       pawns.forEach(pos => {
-        result.concat(
+        result = result.concat(
           this.enhance(pawnProto.getPossibleJumps(pos, align), pos)
         );
       });
@@ -119,11 +125,12 @@ class PredictorState extends State {
   }
 
   compute() {
+    // console.log("Computing "+this.alignment.join("")+" "+(this.children && this.children.length));
     if (this.children === null) {
       return this.computeThis();
     }
     if (this.children.length === 0) {
-      Predictor.queuePointer++;
+      return;
     }
     this.children[0].compute();
   }
@@ -133,14 +140,9 @@ class PredictorState extends State {
   }
 
   getBestOption(): PredictorScore {
-    if (this.children) {
-      if (this.children.length === 0) {
-        return createScore([this], 0, "=");
-      }
+    if (this.children&&this.children.length) {
       const scores = this.children.map(child => child.getBestOption());
-      const comparator = this.isBlackPlaying
-        ? blackPicker
-        : whitePicker;
+      const comparator = this.isBlackPlaying ? blackPicker : whitePicker;
       const bestResult = scores.reduce(comparator);
       bestResult.push(this);
       return bestResult;
@@ -170,6 +172,9 @@ class PredictorState extends State {
       }
       if (blackValue === 0) {
         return createScore([this], -100000000000, "b");
+      }
+      if (this.children.length === 0) {
+        return createScore([this], 0, "=");
       }
       return createScore([this], blackValue - whiteValue);
     }

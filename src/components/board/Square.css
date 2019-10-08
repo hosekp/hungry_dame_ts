@@ -2,6 +2,7 @@
   width: 12.5%;
   height: 12.5%;
   float: left;
+  position: relative;
 }
 .Square.black {
   background-color: saddlebrown;
@@ -11,4 +12,10 @@
 }
 .Square.allowed {
   background-color: red;
+}
+.Square__index{
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: smaller;
 }

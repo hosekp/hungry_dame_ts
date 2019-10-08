@@ -27,6 +27,7 @@ const Square: FC<SquareProps> = ({
   const className = "Square black" + (allowed ? " allowed" : "");
   return (
     <div className={className} onClick={() => onClick && onClick(index)}>
+      <div className="Square__index">{index}</div>
       {piece}
     </div>
   );

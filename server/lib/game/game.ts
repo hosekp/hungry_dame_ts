@@ -64,7 +64,7 @@ export class Game {
       if (this.state.isPat()) {
         gameEnded = "pat";
       } else {
-        gameEnded = this.state.isBlackPlaying ? "white" : "black";
+        gameEnded = this.state.isBlackPlaying ? "black" : "white";
       }
     }
     return {
