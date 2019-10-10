@@ -63,6 +63,7 @@ class PredictorState extends State {
       return this.assignResult(result2, true);
     }
     const dames = this.findDamesOnTurn();
+    // console.log("DAMES",dames);
     const dameProto = this.isBlackPlaying ? blackDame : whiteDame;
     if (dames.length > 0) {
       if (dames.some(pos => dameProto.canJump(pos, align))) {
@@ -80,6 +81,7 @@ class PredictorState extends State {
     }
     const pawnProto = this.isBlackPlaying ? blackPawn : whitePawn;
     const pawns = this.findPawnsOnTurn();
+    // console.log("PAWNS",pawns);
     const canJump = pawns.some(pos => pawnProto.canJump(pos, align));
     if (canJump) {
       pawns.forEach(pos => {
@@ -91,12 +93,12 @@ class PredictorState extends State {
     } else {
       dames.forEach(pos => {
         result = result.concat(
-          this.enhance(dameProto.getPossibleJumps(pos, align), pos)
+          this.enhance(dameProto.getPossibleMoves(pos, align), pos)
         );
       });
       pawns.forEach(pos => {
         result = result.concat(
-          this.enhance(pawnProto.getPossibleJumps(pos, align), pos)
+          this.enhance(pawnProto.getPossibleMoves(pos, align), pos)
         );
       });
       return this.assignResult(result, false);
@@ -125,7 +127,7 @@ class PredictorState extends State {
   }
 
   compute() {
-    // console.log("Computing "+this.alignment.join("")+" "+(this.children && this.children.length));
+    console.log("Compute "+this.alignment.join("")+" "+(this.children && this.children.length));
     if (this.children === null) {
       return this.computeThis();
     }
@@ -140,10 +142,18 @@ class PredictorState extends State {
   }
 
   getBestOption(): PredictorScore {
-    if (this.children&&this.children.length) {
+    if (this.children && this.children.length) {
       const scores = this.children.map(child => child.getBestOption());
       const comparator = this.isBlackPlaying ? blackPicker : whitePicker;
       const bestResult = scores.reduce(comparator);
+      console.log(
+        "COMPARE",
+        this.isBlackPlaying ? "black" : "white",
+        scores.map(score => score.score),
+        bestResult.score,
+        bestResult.length,
+        bestResult[bestResult.length - 1].alignment.join("")
+      );
       bestResult.push(this);
       return bestResult;
     } else {
@@ -173,7 +183,7 @@ class PredictorState extends State {
       if (blackValue === 0) {
         return createScore([this], -100000000000, "b");
       }
-      if (this.children.length === 0) {
+      if (this.children && this.children.length === 0) {
         return createScore([this], 0, "=");
       }
       return createScore([this], blackValue - whiteValue);

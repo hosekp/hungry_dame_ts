@@ -6,7 +6,7 @@ import { State } from "../game/state";
 import { createAlignment } from "../game/alignment";
 import { PredictorScore } from "./PredictorScore";
 import { alignmentDiff } from "./alignmentDiff";
-import {PredictionType} from "./PredictionType";
+import { PredictionType } from "./PredictionType";
 
 export class Predictor {
   currentState: PredictorState = new PredictorState(
@@ -19,7 +19,7 @@ export class Predictor {
   static queuePointer: number = 0;
   static priorityPointer: number = 0;
   timeout: number | null = null;
-  maxSteps: number = 10;
+  maxSteps: number = 1000;
   currentSteps: number = 0;
 
   reset(initial: State) {
@@ -33,6 +33,7 @@ export class Predictor {
     Predictor.priorityPointer = 0;
     Predictor.queue = [predictorInitial];
     Predictor.queuePointer = 0;
+    this.currentSteps = 0;
     this.oneBatch();
   }
 
@@ -76,11 +77,25 @@ export class Predictor {
     }
     this.currentSteps++;
     if (Predictor.priorityQueue.length > Predictor.priorityPointer) {
-      console.log("Computing "+Predictor.priorityQueue[Predictor.priorityPointer].alignment.join(""));
+      console.log(
+        "Computing " +
+          Predictor.priorityQueue[Predictor.priorityPointer].alignment.join(""),
+        [
+          Predictor.priorityQueue.length - Predictor.priorityPointer,
+          Predictor.queue.length - Predictor.queuePointer
+        ]
+      );
       Predictor.priorityQueue[Predictor.priorityPointer].compute();
       Predictor.priorityPointer++;
     } else if (Predictor.queue.length > Predictor.queuePointer) {
-      console.log("Computing "+Predictor.queue[Predictor.queuePointer].alignment.join(""));
+      console.log(
+        "Computing " +
+          Predictor.queue[Predictor.queuePointer].alignment.join(""),
+        [
+          Predictor.priorityQueue.length - Predictor.priorityPointer,
+          Predictor.queue.length - Predictor.queuePointer
+        ]
+      );
       Predictor.queue[Predictor.queuePointer].compute();
       Predictor.queuePointer++;
     } else {
@@ -90,7 +105,7 @@ export class Predictor {
     this.timeout = setTimeout(() => this.oneBatch(), 0) as any;
   }
 
-  getPredictions():PredictionType[] {
+  getPredictions(): PredictionType[] {
     if (!this.currentState.children) {
       return [];
     }
@@ -106,7 +121,7 @@ export class Predictor {
         this.currentState.alignment,
         prediction[prediction.length - 1].alignment
       ),
-      moves:prediction.length,
+      moves: prediction.length,
       score: prediction.score,
       state: prediction.state
     }));
