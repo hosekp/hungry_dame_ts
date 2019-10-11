@@ -4,11 +4,9 @@ import { Alignment, createAlignment } from "./alignment";
 import { GameStatus } from "../../interfaces/game-status";
 
 const initialAlignment: Alignment = createAlignment(
-  // "bBbBbbbBbbbb--------wwWwWwwwWwww"
-  // "bbbbbbbbbbbb--------wwwwwwwwwwww"
+  "bbbbbbbbbbbb--------wwwwwwwwwwww"
   // "b-------------------wwwwwwwwwwww"
-  // "----------w------b---W----------"
-  "--------b-------ww----wwwwwwwwww"
+  // "--------b-------ww----wwwwwwwwww"
 );
 const initialState: State = new State(initialAlignment, null, false);
 

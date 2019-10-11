@@ -127,18 +127,25 @@ class PredictorState extends State {
   }
 
   compute() {
-    console.log("Compute "+this.alignment.join("")+" "+(this.children && this.children.length));
     if (this.children === null) {
       return this.computeThis();
     }
     if (this.children.length === 0) {
       return;
     }
-    this.children[0].compute();
+    const children = this.children;
+    for (let i = 0; i < children.length; i++) {
+      Predictor.priorityQueue.push(children[i]);
+    }
   }
 
   computeThis() {
-    this.assignValidMoves();
+    const id = this.getId();
+    if (Predictor.states[id]) {
+    } else {
+      this.assignValidMoves();
+      Predictor.states[this.getId()] = this;
+    }
   }
 
   getBestOption(): PredictorScore {
@@ -146,14 +153,14 @@ class PredictorState extends State {
       const scores = this.children.map(child => child.getBestOption());
       const comparator = this.isBlackPlaying ? blackPicker : whitePicker;
       const bestResult = scores.reduce(comparator);
-      console.log(
-        "COMPARE",
-        this.isBlackPlaying ? "black" : "white",
-        scores.map(score => score.score),
-        bestResult.score,
-        bestResult.length,
-        bestResult[bestResult.length - 1].alignment.join("")
-      );
+      // console.log(
+      //   "COMPARE",
+      //   this.isBlackPlaying ? "black" : "white",
+      //   scores.map(score => score.score),
+      //   bestResult.score,
+      //   bestResult.length,
+      //   bestResult[bestResult.length - 1].alignment.join("")
+      // );
       bestResult.push(this);
       return bestResult;
     } else {
@@ -188,6 +195,14 @@ class PredictorState extends State {
       }
       return createScore([this], blackValue - whiteValue);
     }
+  }
+
+  getId() {
+    return (
+      (this.isBlackPlaying ? "B" : "W") +
+      this.alignment.join("") +
+      (this.forcedPiece === null ? this.forcedPiece : "")
+    );
   }
 }
 

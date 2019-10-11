@@ -1,6 +1,6 @@
 import { Alignment, getDirection } from "./alignment";
 import { Pieces } from "./pieces/pieces";
-import {Piece} from "./pieces/piece";
+import { Piece } from "./pieces/piece";
 
 export class State {
   readonly alignment: Alignment;
@@ -61,7 +61,7 @@ export class State {
   }
 
   move(piecePos: number, target: number): State {
-    let piece = (Pieces.getPiece(this.alignment[piecePos]) as Piece);
+    let piece = Pieces.getPiece(this.alignment[piecePos]) as Piece;
     const direction = getDirection(piecePos, target);
     const newAlign = this.alignment.slice();
     const canJump = piece.canJump(piecePos, this.alignment);
@@ -95,9 +95,11 @@ export class State {
       if (align[i] === "-") continue;
       if (!black && (align[i] === "b" || align[i] === "B")) {
         if (white) return true;
+        black = true;
       }
       if (!white && (align[i] === "w" || align[i] === "W")) {
         if (black) return true;
+        white = true;
       }
     }
     return false;
