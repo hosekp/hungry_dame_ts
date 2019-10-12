@@ -1,9 +1,10 @@
 import express from "express";
+import expressWs from "express-ws";
 import bodyParser from "body-parser";
 import errorMiddleware from "./errors/errorMiddleware";
-import {bindRoutes} from "./routes";
+import { bindRoutes } from "./routes";
 
-const app = express();
+const app = expressWs(express()).app;
 const port = process.env.PORT || 5000;
 
 function loggerMiddleware(

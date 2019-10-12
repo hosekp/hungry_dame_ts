@@ -3,6 +3,7 @@ import { postRestart } from "./post-restart";
 import { putMove } from "./put-move";
 import { getMoves } from "./get-moves";
 import { getPredictions } from "./get-predictions";
+import {wsPrediction} from "./ws-prediction";
 
 export const bindRoutes = (app: Application) => {
   const router = Router();
@@ -10,5 +11,6 @@ export const bindRoutes = (app: Application) => {
   router.put("/api/move/:piece/:target", putMove);
   router.get("/api/moves/:piece", getMoves);
   router.get("/api/predictions", getPredictions);
+  router.ws("/api/prediction", wsPrediction);
   app.use("/", router);
 };

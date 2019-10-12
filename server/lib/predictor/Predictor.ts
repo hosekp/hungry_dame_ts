@@ -7,6 +7,9 @@ import { createAlignment } from "../game/alignment";
 import { PredictorScore } from "./PredictorScore";
 import { alignmentDiff } from "./alignmentDiff";
 import { PredictionType } from "../../interfaces/PredictionType";
+import { PredictionResponse } from "../../interfaces/PredictionResponse";
+import Stream from "./stream";
+
 import Immediate = NodeJS.Immediate;
 
 export class Predictor {
@@ -21,8 +24,9 @@ export class Predictor {
   static priorityPointer: number = 0;
   static states: { [id: string]: PredictorState } = {};
   timeout: Immediate | null = null;
-  maxSteps: number = 1000000;
+  maxSteps: number = 100000;
   currentSteps: number = 0;
+  stream: Stream<PredictionResponse> = new Stream<PredictionResponse>();
 
   reset(initial: State) {
     const predictorInitial = this.currentState.createState(
@@ -44,8 +48,9 @@ export class Predictor {
     if (this.timeout) {
       clearImmediate(this.timeout);
     }
+    this.currentSteps = 0;
     if (this.currentState.children === null) {
-      this.oneBatch();
+      this.oneBatch(true);
     }
     const children = this.currentState.children as PredictorState[];
     if (!children) {
@@ -61,7 +66,7 @@ export class Predictor {
         Predictor.priorityPointer = 0;
         Predictor.queue = [child];
         Predictor.queuePointer = 0;
-        this.currentSteps = 0;
+        this.sendPrediction();
         this.oneBatch();
         return;
       }
@@ -74,9 +79,12 @@ export class Predictor {
     }
   }
 
-  oneBatch() {
+  oneBatch(justOne?: boolean) {
     if (this.timeout) {
       clearImmediate(this.timeout);
+    }
+    if ((5 * this.currentSteps) % this.maxSteps < 5) {
+      this.sendPrediction();
     }
     if (this.currentSteps === this.maxSteps) {
       console.log("Computing finished - maxSteps reached", [
@@ -99,6 +107,7 @@ export class Predictor {
       ]);
       return;
     }
+    if (justOne) return;
     this.timeout = setImmediate(() => this.oneBatch(), 0);
   }
 
@@ -127,6 +136,14 @@ export class Predictor {
       score: prediction.score,
       state: prediction.state
     }));
+  }
+  sendPrediction() {
+    const response: PredictionResponse = {
+      predictions: this.getPredictions(),
+      ratio: this.currentSteps / this.maxSteps,
+      queue: Predictor.queue.length + Predictor.priorityQueue.length
+    };
+    this.stream.add(response);
   }
 }
 

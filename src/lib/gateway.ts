@@ -1,6 +1,6 @@
 import { GameStatus } from "../../server/interfaces/game-status";
 import { PossibleMove } from "../../server/interfaces/possible-move";
-import {PredictionResponse} from "../../server/interfaces/PredictionResponse";
+import { PredictionResponse } from "../../server/interfaces/PredictionResponse";
 
 const errorResponse = (response: Response): boolean => {
   if (response.status !== 200) {
@@ -38,10 +38,13 @@ export const movePiece = async (
   return await readJson(response);
 };
 
-export const getPrediction = async ():Promise<PredictionResponse|null>=>{
-  const response = await fetch(`/api/predictions`, {
-    method: "GET"
-  });
-  if (errorResponse(response)) return null;
-  return await readJson(response);
+export const bindPredictor = (
+  onMessage: (response: PredictionResponse) => void
+) => {
+  const ws = new WebSocket("ws://localhost:5000/api/prediction");
+  ws.onmessage = (evt: MessageEvent) => {
+    const data: PredictionResponse = JSON.parse(evt.data);
+    onMessage(data);
+  };
+  return () => ws.close();
 };

@@ -1,10 +1,10 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { GameStatus } from "../../../server/interfaces/game-status";
 import { PredictionType } from "../../../server/interfaces/PredictionType";
 import { PredictionResponse } from "../../../server/interfaces/PredictionResponse";
 
-import { getPrediction } from "../../lib/gateway";
+import { bindPredictor } from "../../lib/gateway";
 import Prediction from "./Prediction";
 
 import "./Sidebar.css";
@@ -17,29 +17,21 @@ type SidebarProps = {
 };
 
 const Sidebar: React.FC<SidebarProps> = ({ status }) => {
-  const { gameEnded, alignment } = status;
+  const { gameEnded } = status;
   const [
     predictionResponse,
     setPredictionResponse
   ] = useState<PredictionResponse | null>(null);
 
   useEffect(() => {
-    setPredictionResponse(null);
-  }, [alignment]);
-  const orderPrediction = useCallback(() => {
-    getPrediction().then(result => {
-      setPredictionResponse(result);
-    });
+    return bindPredictor(response => setPredictionResponse(response));
   }, []);
 
   if (gameEnded != null || predictionResponse === null) {
-    return <div className="Sidebar" >
-      <button onClick={orderPrediction}>Get prediction</button>
-    </div>;
+    return <div className="Sidebar" />;
   }
   return (
     <div className="Sidebar">
-      <button onClick={orderPrediction}>Get prediction</button>
       <span>{Math.floor(predictionResponse.ratio * 100)} % Ratio</span>
       {predictionResponse.queue && (
         <div>{predictionResponse.queue} in Queue</div>
