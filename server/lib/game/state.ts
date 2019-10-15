@@ -6,6 +6,7 @@ export class State {
   readonly alignment: Alignment;
   readonly forcedPiece: number | null;
   readonly isBlackPlaying: boolean;
+  readonly id: string;
 
   constructor(
     alignment: Alignment,
@@ -15,6 +16,7 @@ export class State {
     this.alignment = alignment;
     this.forcedPiece = forcedPiece;
     this.isBlackPlaying = isBlackPlaying;
+    this.id = this.getId();
   }
   createState(
     alignment: Alignment,
@@ -103,5 +105,12 @@ export class State {
       }
     }
     return false;
+  }
+  getId() {
+    return (
+      (this.isBlackPlaying ? "B" : "W") +
+      this.alignment.join("") +
+      (this.forcedPiece === null ? this.forcedPiece : "")
+    );
   }
 }

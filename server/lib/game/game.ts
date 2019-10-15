@@ -7,6 +7,8 @@ const initialAlignment: Alignment = createAlignment(
   "bbbbbbbbbbbb--------wwwwwwwwwwww"
   // "b-------------------wwwwwwwwwwww"
   // "--------b-------ww----wwwwwwwwww"
+  // "bbbbbb-b-bbbb---bw---wwww-wwwwww"
+  // "bbbbbbbb--bb-b--ww--w--www-wwwww"
 );
 const initialState: State = new State(initialAlignment, null, false);
 

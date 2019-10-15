@@ -26,7 +26,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "cd server && ts-node-dev --respawn --transpileOnly ./server.ts",
-    "server:big": "cd server && node --max-old-space-size=8192 -r ts-node/register ./server.ts"
+    "server:big": "cd server && node --max-old-space-size=8192 -r ts-node/register ./server.ts",
+    "server:inspect": "cd server && node --max-old-space-size=8192 --inspect -r ts-node/register ./server.ts"
   },
   "eslintConfig": {
     "extends": "react-app"

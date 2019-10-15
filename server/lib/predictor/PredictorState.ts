@@ -11,13 +11,21 @@ import { Piece } from "../game/pieces/piece";
 import { Alignment } from "../game/alignment";
 import { Predictor } from "./Predictor";
 
-export const blackPicker = (best: PredictorScore, now: PredictorScore) => {
+export const blackPicker = (
+  best: PredictorScore | null,
+  now: PredictorScore | null
+) => {
+  if (!now || !best) return best || now;
   if (best.score === now.score) {
     return best.length < now.length ? best : now;
   }
   return best.score < now.score ? best : now;
 };
-export const whitePicker = (best: PredictorScore, now: PredictorScore) => {
+export const whitePicker = (
+  best: PredictorScore | null,
+  now: PredictorScore | null
+) => {
+  if (!now || !best) return best || now;
   if (best.score === now.score) {
     return best.length < now.length ? best : now;
   }
@@ -41,7 +49,7 @@ export const whiteComparator = (
   }
   return second.score - first.score;
 };
-
+//----------------------------------------------------------------------------------------------------------------------
 class PredictorState extends State {
   children: Array<PredictorState> | null = null;
 
@@ -59,6 +67,7 @@ class PredictorState extends State {
     if (this.forcedPiece !== null) {
       const pos = this.forcedPiece;
       const piece = Pieces.getPiece(align[pos]) as Piece;
+      //console.log("assignValidMoves".toLocaleUpperCase(), "forced");
       const result2 = this.enhance(piece.getPossibleJumps(pos, align), pos);
       return this.assignResult(result2, true);
     }
@@ -106,7 +115,8 @@ class PredictorState extends State {
   }
 
   move(piecePos: number, target: number): PredictorState {
-    return super.move(piecePos, target) as PredictorState;
+    const result = super.move(piecePos, target) as PredictorState;
+    return Predictor.states[result.id] || result;
   }
 
   enhance(result: number[], source: number) {
@@ -115,6 +125,14 @@ class PredictorState extends State {
 
   assignResult(children: PredictorState[], isJumping: boolean): void {
     this.children = children;
+    children.forEach(child => {
+      Predictor.states[child.id] = child;
+    });
+    // console.log(
+    //   "ASSIGN RESULT",
+    //   this.children.length,
+    //   isJumping ? "JUMPING" : ""
+    // );
     if (isJumping) {
       for (let i = 0; i < children.length; i++) {
         Predictor.priorityQueue.push(children[i]);
@@ -127,6 +145,7 @@ class PredictorState extends State {
   }
 
   compute() {
+    // console.log("COMPUTE", this.children && this.children.length, "CHILDREN");
     if (this.children === null) {
       return this.computeThis();
     }
@@ -140,17 +159,24 @@ class PredictorState extends State {
   }
 
   computeThis() {
-    const id = this.getId();
-    if (Predictor.states[id]) {
-    } else {
-      this.assignValidMoves();
-      Predictor.states[this.getId()] = this;
+    const id = this.id;
+    this.assignValidMoves();
+    if (!this.children) {
+      throw new Error("no children " + id);
     }
   }
 
-  getBestOption(): PredictorScore {
+  getBestOption(path: PredictorState[]): PredictorScore | null {
+    if (path.includes(this)) {
+      // console.log("ALREADY ON PATH");
+      return null;
+    }
+    path = path.slice();
+    path.push(this);
     if (this.children && this.children.length) {
-      const scores = this.children.map(child => child.getBestOption());
+      const scores = this.children.map(child =>
+        child.getBestOption(path)
+      );
       const comparator = this.isBlackPlaying ? blackPicker : whitePicker;
       const bestResult = scores.reduce(comparator);
       // console.log(
@@ -161,7 +187,6 @@ class PredictorState extends State {
       //   bestResult.length,
       //   bestResult[bestResult.length - 1].alignment.join("")
       // );
-      bestResult.push(this);
       return bestResult;
     } else {
       let blackValue = 0;
@@ -185,24 +210,16 @@ class PredictorState extends State {
         }
       }
       if (whiteValue === 0) {
-        return createScore([this], 100000000000, "w");
+        return createScore(path, 100000000000, "w");
       }
       if (blackValue === 0) {
-        return createScore([this], -100000000000, "b");
+        return createScore(path, -100000000000, "b");
       }
       if (this.children && this.children.length === 0) {
-        return createScore([this], 0, "=");
+        return createScore(path, 0, "=");
       }
-      return createScore([this], blackValue - whiteValue);
+      return createScore(path, blackValue - whiteValue);
     }
-  }
-
-  getId() {
-    return (
-      (this.isBlackPlaying ? "B" : "W") +
-      this.alignment.join("") +
-      (this.forcedPiece === null ? this.forcedPiece : "")
-    );
   }
 }
 

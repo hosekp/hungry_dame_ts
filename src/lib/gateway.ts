@@ -48,3 +48,7 @@ export const bindPredictor = (
   };
   return () => ws.close();
 };
+
+export const resetPrediction = ()=>{
+  return fetch("/api/reset-prediction", { method:"POST" });
+};

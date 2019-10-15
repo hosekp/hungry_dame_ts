@@ -50,6 +50,7 @@ export class Predictor {
     }
     this.currentSteps = 0;
     if (this.currentState.children === null) {
+      //console.log("PREBATCH", this.currentState.alignment.join(""));
       this.oneBatch(true);
     }
     const children = this.currentState.children as PredictorState[];
@@ -94,18 +95,23 @@ export class Predictor {
       return;
     }
     this.currentSteps++;
-    if (Predictor.priorityQueue.length > Predictor.priorityPointer) {
-      Predictor.priorityQueue[Predictor.priorityPointer].compute();
-      Predictor.priorityPointer++;
-    } else if (Predictor.queue.length > Predictor.queuePointer) {
-      Predictor.queue[Predictor.queuePointer].compute();
-      Predictor.queuePointer++;
-    } else {
-      console.log("Computing finished - no more states to compute", [
-        Predictor.priorityQueue.length,
-        Predictor.queue.length
-      ]);
-      return;
+    try {
+      if (Predictor.priorityQueue.length > Predictor.priorityPointer) {
+        Predictor.priorityQueue[Predictor.priorityPointer].compute();
+        Predictor.priorityPointer++;
+      } else if (Predictor.queue.length > Predictor.queuePointer) {
+        Predictor.queue[Predictor.queuePointer].compute();
+        Predictor.queuePointer++;
+      } else {
+        console.log("Computing finished - no more states to compute", [
+          Predictor.priorityQueue.length,
+          Predictor.queue.length
+        ]);
+        return;
+      }
+    } catch (e) {
+      console.log("NO CHILDREN",this.currentSteps);
+      throw e;
     }
     if (justOne) return;
     this.timeout = setImmediate(() => this.oneBatch(), 0);
@@ -120,9 +126,9 @@ export class Predictor {
         return [];
       }
     }
-    const predictions = this.currentState.children.map(child =>
-      child.getBestOption()
-    );
+    const predictions  = (this.currentState.children.map(child =>
+      child.getBestOption([])
+    ).filter(score=>score) as PredictorScore[]);
     const comparator = this.currentState.isBlackPlaying
       ? blackComparator
       : whiteComparator;
@@ -130,7 +136,8 @@ export class Predictor {
     return predictions.map((prediction: PredictorScore) => ({
       move: alignmentDiff(
         this.currentState.alignment,
-        prediction[prediction.length - 1].alignment
+        // prediction[prediction.length - 1].alignment
+        prediction[0].alignment
       ),
       moves: prediction.length,
       score: prediction.score,

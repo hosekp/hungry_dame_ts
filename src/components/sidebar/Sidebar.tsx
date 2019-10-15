@@ -4,7 +4,7 @@ import { GameStatus } from "../../../server/interfaces/game-status";
 import { PredictionType } from "../../../server/interfaces/PredictionType";
 import { PredictionResponse } from "../../../server/interfaces/PredictionResponse";
 
-import { bindPredictor } from "../../lib/gateway";
+import {bindPredictor, resetPrediction} from "../../lib/gateway";
 import Prediction from "./Prediction";
 
 import "./Sidebar.css";
@@ -32,6 +32,7 @@ const Sidebar: React.FC<SidebarProps> = ({ status }) => {
   }
   return (
     <div className="Sidebar">
+      <button onClick={resetPrediction} >Reset</button>
       <span>{Math.floor(predictionResponse.ratio * 100)} % Ratio</span>
       {predictionResponse.queue && (
         <div>{predictionResponse.queue} in Queue</div>
