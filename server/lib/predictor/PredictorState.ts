@@ -125,21 +125,17 @@ class PredictorState extends State {
 
   assignResult(children: PredictorState[], isJumping: boolean): void {
     this.children = children;
-    children.forEach(child => {
-      Predictor.states[child.id] = child;
-    });
-    // console.log(
-    //   "ASSIGN RESULT",
-    //   this.children.length,
-    //   isJumping ? "JUMPING" : ""
-    // );
+    let queue;
     if (isJumping) {
-      for (let i = 0; i < children.length; i++) {
-        Predictor.priorityQueue.push(children[i]);
-      }
+      queue = Predictor.priorityQueue;
     } else {
-      for (let i = 0; i < children.length; i++) {
-        Predictor.queue.push(children[i]);
+      queue = Predictor.queue;
+    }
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i];
+      if (!Predictor.states[child.id]) {
+        Predictor.states[child.id] = child;
+        queue.push(child);
       }
     }
   }
@@ -174,9 +170,7 @@ class PredictorState extends State {
     path = path.slice();
     path.push(this);
     if (this.children && this.children.length) {
-      const scores = this.children.map(child =>
-        child.getBestOption(path)
-      );
+      const scores = this.children.map(child => child.getBestOption(path));
       const comparator = this.isBlackPlaying ? blackPicker : whitePicker;
       const bestResult = scores.reduce(comparator);
       // console.log(

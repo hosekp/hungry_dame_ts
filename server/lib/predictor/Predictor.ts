@@ -24,7 +24,7 @@ export class Predictor {
   static priorityPointer: number = 0;
   static states: { [id: string]: PredictorState } = {};
   timeout: Immediate | null = null;
-  maxSteps: number = 100000;
+  maxSteps: number = 1000000;
   currentSteps: number = 0;
   stream: Stream<PredictionResponse> = new Stream<PredictionResponse>();
 
@@ -67,7 +67,8 @@ export class Predictor {
         Predictor.priorityPointer = 0;
         Predictor.queue = [child];
         Predictor.queuePointer = 0;
-        this.sendPrediction();
+        Predictor.states = {};
+        this.sendPrediction(false);
         this.oneBatch();
         return;
       }
@@ -84,15 +85,16 @@ export class Predictor {
     if (this.timeout) {
       clearImmediate(this.timeout);
     }
-    if ((5 * this.currentSteps) % this.maxSteps < 5) {
-      this.sendPrediction();
-    }
     if (this.currentSteps === this.maxSteps) {
       console.log("Computing finished - maxSteps reached", [
         Predictor.priorityQueue.length - Predictor.priorityPointer,
         Predictor.queue.length - Predictor.queuePointer
       ]);
+      this.sendPrediction(true);
       return;
+    }
+    if ((5 * this.currentSteps) % this.maxSteps < 5) {
+      this.sendPrediction(false);
     }
     this.currentSteps++;
     try {
@@ -107,28 +109,29 @@ export class Predictor {
           Predictor.priorityQueue.length,
           Predictor.queue.length
         ]);
+        this.sendPrediction(true);
         return;
       }
     } catch (e) {
-      console.log("NO CHILDREN",this.currentSteps);
+      console.log("NO CHILDREN", this.currentSteps);
       throw e;
     }
     if (justOne) return;
     this.timeout = setImmediate(() => this.oneBatch(), 0);
   }
 
-  getPredictions(): PredictionType[] {
+  getPredictions(force: boolean): PredictionType[] {
     if (!this.currentState.children) {
       return [];
     }
-    if (this.currentSteps < this.maxSteps) {
+    if (!force && this.currentSteps < this.maxSteps) {
       if (Predictor.queue.length !== Predictor.queuePointer) {
         return [];
       }
     }
-    const predictions  = (this.currentState.children.map(child =>
-      child.getBestOption([])
-    ).filter(score=>score) as PredictorScore[]);
+    const predictions = this.currentState.children
+      .map(child => child.getBestOption([]))
+      .filter(score => score) as PredictorScore[];
     const comparator = this.currentState.isBlackPlaying
       ? blackComparator
       : whiteComparator;
@@ -144,9 +147,9 @@ export class Predictor {
       state: prediction.state
     }));
   }
-  sendPrediction() {
+  sendPrediction(force: boolean) {
     const response: PredictionResponse = {
-      predictions: this.getPredictions(),
+      predictions: this.getPredictions(force),
       ratio: this.currentSteps / this.maxSteps,
       queue: Predictor.queue.length + Predictor.priorityQueue.length
     };
